@@ -1,5 +1,5 @@
 
-const user = require('./../models/user/user');
+const user = require('./../models/user/login');
  const checkUnique = async (req, res, next) => {
   const { email } = req.body;
     const existingEmail = await user.findOne({

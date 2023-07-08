@@ -1,31 +1,23 @@
 const express = require('express');
-const {signup} = require('./../controllers/userController')
-const Registration=require("./../models/user/user")
-const bcrypt = require("bcryptjs")
-const jwt = require('jsonwebtoken')
+const {signup,signin} = require('./../controllers/userController')
+const {FetchAllUser} = require("./../controllers/admin/user/userFetchAllController");
+const profileImage = require('./../middleware/profileImages/profileMulter');
+const homeSliderImages = require("./../middleware/homeSliderImages/homeSliderImages"); 
+const PopUpImages = require("./../middleware/popUpImages/popUpImages");
+const EventImages = require('./../middleware/EventImages/EventImages');
+const {UploadSlider,getHomeSliderAll} = require('./../controllers/homeController/homeController');
+const {CreatepopUp,getpopUpAll} = require("./../controllers/popUpController/popUpController");
+const {CreateEvent,getEventAll,DeleteEvent} = require("./../controllers/EventController/EventController");
 const router = express.Router();
 const  checkUnique  = require("./../middleware/checkUniqueEntry")
-const {takeAQuestion} = require("./../controllers/testQuestionController/testQuestionController");
-// const {takeAQuestion1} = require("./../controllers/testQuestionController1/testQuestionController");
-router.post("/auth/signup",checkUnique ,signup);
-router.post('/auth/signin', async (req, res) => {
-    // Read username and password from request body
-    const { email, password  } = req.body;
-    const user = await Registration.findOne({
-        email: email,
-    })
-    if (!user) {
-      return res.status(404).send({ message: "invalid user" })
-    }
-  
-    const isMatch = await bcrypt.compare(password, user.password);
-   
-    if (!isMatch) {
-      return res.status(404).send({message:"password does not matched"})
-    }
-    const token =  jwt.sign({ id: user._id }, "madadgar");
-    return res.status(200).json({ token: token, user: user._id ,userName:user.fullName});
-  });
-router.post("/post/question",takeAQuestion);
-// router.post("/post/level1",takeAQuestion1);
+router.post("/auth/signup",checkUnique,profileImage.array('image'),signup);
+router.post('/auth/signin', signin);
+router.post('/home/slider/upload',homeSliderImages.array('image'),UploadSlider);
+router.get('/fetch/homeSlider/allDetails',getHomeSliderAll);
+router.post('/create/popUp/post',PopUpImages.array('image'),CreatepopUp);
+router.get('/fetch/all/popup',getpopUpAll);
+router.post('/event/add/post',EventImages.array('image'),CreateEvent);
+router.get('/fetch/All/events',getEventAll);
+router.get('/user/All/UserData',FetchAllUser);
+router.delete('/event/remover/:id',DeleteEvent);
 module.exports=router;

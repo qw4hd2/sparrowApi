@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const connectDatabase = () => {
-    mongoose.connect("mongodb+srv://madadgar:madadgar123@cluster0.xsp6b4n.mongodb.net/testProject",
+    mongoose.connect("mongodb+srv://madadgar:madadgar123@cluster0.xsp6b4n.mongodb.net/NewProject",
         {
             useNewUrlParser: true
 
